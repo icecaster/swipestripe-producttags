@@ -134,9 +134,7 @@ class ProductTag_ProductCategory_Controller_Extension extends Extension {
 		$tagIDs = $this->TagIDs();
 
 		$fields = array();
-		$fields[] = new LiteralField("hs", "<div class=\"sideHeader\">");
-		$fields[] = new HeaderField("filterheader", "Refine results",3);
-		$fields[] = new LiteralField("hp", "</div>");
+		
 
 		foreach($this->owner->TagGroups() as $group) {
 			
