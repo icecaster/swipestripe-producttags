@@ -26,6 +26,7 @@ class ProductTag extends DataObject {
 
 	private static $default_sort = "SortOrder";
 
+
 	function NiceTitle() {
 		return $this->Group()->Title.": ".$this->Title;
 	}
@@ -34,6 +35,7 @@ class ProductTag extends DataObject {
 		Object::add_extension('Product', 'ProductTag_ProductExtension');
 		Object::add_extension('ProductCategory_Controller', 'ProductTag_ProductCategory_Controller_Extension');
 	}
+
 }
 
 class ProductTagGroup extends DataObject {
@@ -63,6 +65,7 @@ class ProductTagGroup extends DataObject {
 
 		return $fields;
 	}
+
 }
 
 class ProductTag_ProductExtension extends DataExtension {
@@ -73,11 +76,10 @@ class ProductTag_ProductExtension extends DataExtension {
 	
 	function updateProductCMSFields(FieldList $fields) {
 		$fields->addFieldToTab("Root.Main", ListboxField::create("Tags", "Filter Tags")
-				->setSource(ProductTag::get()->map("ID", "NiceTitle")->toArray())
-				->setMultiple(true)
-		, "Content");
+			->setSource(ProductTag::get()->map("ID", "NiceTitle")->toArray())
+			->setMultiple(true), 
+		"Content");
 	}
-
 
 	function TagGroupIDs() {
 		$groupIDs = $this->owner->Tags()->map("GroupID", "GroupID")->toArray();
@@ -98,6 +100,7 @@ class ProductTag_ProductCategory_Controller_Extension extends Extension {
 		"ProductFilterForm",
 		"filterProducts"
 	);
+
 
 	function TagIDs() {
 		$tags_map = $this->owner->Products()->map("ID", "TagIDs")->toArray();
@@ -156,6 +159,7 @@ class ProductTag_ProductCategory_Controller_Extension extends Extension {
 		);
 
 		$form = Form::create($this->owner, __FUNCTION__, $fields, $actions);
+		$form->setEncType(Form::ENC_TYPE_MULTIPART);
 		$form->disableSecurityToken();
 		$form->setFormMethod("get");
 		return $form;
@@ -184,6 +188,8 @@ class ProductTag_ProductCategory_Controller_Extension extends Extension {
 			foreach($currentFilters as $groupID => $tags) {
 				$tagIDs_sql = implode(",", $tags);
 				$products = $products->where("SiteTree_Live.ID IN (SELECT ProductID FROM ProductTag_Products WHERE ProductTagID IN ({$tagIDs_sql}))");
+				$products = PaginatedList::create($products, $this->owner->request)
+					->setPageLength($this->owner->config()->get("products_per_page"));
 			}
 		}
 
@@ -203,6 +209,7 @@ class ProductTag_Admin extends ModelAdmin {
 	static $url_segment = "tags";
 	static $menu_title = "Filter Tags";
 
+
 	public function getEditForm($id = null, $fields = null) {
 		$form = parent::getEditForm($id, $fields);
 		if(singleton($this->modelClass)->hasField("SortOrder")) {
@@ -217,4 +224,3 @@ class ProductTag_Admin extends ModelAdmin {
 	}
 
 }
-
