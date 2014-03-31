@@ -102,8 +102,8 @@ class ProductTag_ProductCategory_Controller_Extension extends Extension {
 	);
 
 	function TagIDs() {
-		return $this->hasMethod("cachedMethod") ? 
-			$this->cachedMethod("getTagIDs", $this->ID) : $this->getTagIDs();
+		return $this->owner->hasMethod("cachedMethod") ? 
+			$this->owner->cachedMethod("getTagIDs", $this->owner->ID) : $this->getTagIDs();
 	}
 
 	function getTagIDs() {
@@ -118,8 +118,8 @@ class ProductTag_ProductCategory_Controller_Extension extends Extension {
 	}
 
 	function TagGroups() {
-		return $this->hasMethod("cachedMethod") ? 
-			$this->cachedMethod("getTagGroups", $this->ID) : $this->getTagGroups();
+		return $this->owner->hasMethod("cachedMethod") ? 
+			$this->owner->cachedMethod("getTagGroups", $this->owner->ID) : $this->getTagGroups();
 	}
 
 	function getTagGroups() {
