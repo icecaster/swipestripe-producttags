@@ -101,8 +101,12 @@ class ProductTag_ProductCategory_Controller_Extension extends Extension {
 		"filterProducts"
 	);
 
-
 	function TagIDs() {
+		return $this->hasMethod("cachedMethod") ? 
+			$this->cachedMethod("getTagIDs", $this->ID) : $this->getTagIDs();
+	}
+
+	function getTagIDs() {
 		$tags_map = $this->owner->Products()->map("ID", "TagIDs")->toArray();
 		$tagIDs = array();
 		foreach($tags_map as $_productID => $_tagMap) {
@@ -114,6 +118,11 @@ class ProductTag_ProductCategory_Controller_Extension extends Extension {
 	}
 
 	function TagGroups() {
+		return $this->hasMethod("cachedMethod") ? 
+			$this->cachedMethod("getTagGroups", $this->ID) : $this->getTagGroups();
+	}
+
+	function getTagGroups() {
 		$groups_map = $this->owner->Products()->map("ID", "TagGroupIDs")->toArray();
 		$groupIDs = array();
 		foreach($groups_map as $_productID => $_groupMap) {
@@ -178,7 +187,6 @@ class ProductTag_ProductCategory_Controller_Extension extends Extension {
 	}
 
 	function filterProducts($data, $form) {
-
 		$currentFilters = $this->Filters();
 		$products = $this->owner->Products();
 
